@@ -134,7 +134,4 @@ Email: [heyvikas5@gmail.com](mailto:heyvikas5@gmail.com)
 
 ---
 
-## 💡 Future Enhancements
-- Add JWT Authentication
-- React Frontend for better UX
-- Admin panel to monitor referrals
+

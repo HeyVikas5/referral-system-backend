@@ -57,6 +57,7 @@ const registerUser = async (req, res) => {
       message: 'User registered successfully',
       referralCode: newUser.referralCode,
       level: newUser.level
+      userId: newUser._id 
     });
 
   } catch (err) {

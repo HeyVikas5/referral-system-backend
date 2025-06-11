@@ -56,7 +56,7 @@ const registerUser = async (req, res) => {
     res.status(201).json({
       message: 'User registered successfully',
       referralCode: newUser.referralCode,
-      level: newUser.level
+      level: newUser.level,
       userId: newUser._id 
     });
 

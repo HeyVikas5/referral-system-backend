@@ -1,23 +1,24 @@
-const express = require('express');
-const cors = require('cors');
-const userRoutes = require('./routes/userRoutes');
-const purchaseRoutes = require('./routes/purchaseRoutes');
-const earningsRoutes = require('./routes/earningsRoutes');
-
-
+const express = require("express");
+const path = require("path");
 const app = express();
 
-// ✅ Important: Middleware for JSON parsing
-app.use(cors());
-app.use(express.json()); // <<--- this line is mandatory
+app.use(express.json());
 
-// Routes
-app.use('/api/users', userRoutes);
-app.use('/api/purchase', purchaseRoutes);
-app.use('/api/earnings', earningsRoutes);
+// ✅ Serve public folder
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get('/', (req, res) => {
-  res.send('Referral System API is Running');
+// ✅ Default route
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "signup.html"));
 });
+
+// API routes
+const userRoutes = require("./routes/userRoutes");
+const purchaseRoutes = require("./routes/purchaseRoutes");
+const earningsRoutes = require("./routes/earningsRoutes");
+
+app.use("/api/users", userRoutes);
+app.use("/api/purchase", purchaseRoutes);
+app.use("/api/earnings", earningsRoutes);
 
 module.exports = app;

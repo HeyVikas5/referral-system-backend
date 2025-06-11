@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Referral Signup</title>
+  <title>Referral App</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
@@ -25,11 +25,40 @@
       </div>
       <button type="submit" class="btn btn-primary">Sign Up</button>
     </form>
-    <div id="response" class="mt-3"></div>
+    <div id="signupResponse" class="mt-3"></div>
+
+    <hr class="my-5" />
+
+    <h4>💸 Make a Purchase</h4>
+    <form id="purchaseForm">
+      <div class="mb-3">
+        <label for="purchaseUserId" class="form-label">User ID</label>
+        <input type="text" class="form-control" id="purchaseUserId" required />
+      </div>
+      <div class="mb-3">
+        <label for="amount" class="form-label">Amount</label>
+        <input type="number" class="form-control" id="amount" required />
+      </div>
+      <button type="submit" class="btn btn-success">Make Purchase</button>
+    </form>
+    <div id="purchaseResponse" class="mt-3"></div>
+
+    <hr class="my-5" />
+
+    <h4>💰 Check Earnings</h4>
+    <form id="earningsForm">
+      <div class="mb-3">
+        <label for="earnUserId" class="form-label">User ID</label>
+        <input type="text" class="form-control" id="earnUserId" required />
+      </div>
+      <button type="submit" class="btn btn-info">Get Earnings</button>
+    </form>
+    <div id="earningsResponse" class="mt-3"></div>
   </div>
 
   <script>
-    const baseUrl = "https://referral-system-backend-m0w9.onrender.com"; // replace if different
+    const baseUrl = "https://referral-system-backend-m0w9.onrender.com";
+
     document.getElementById("signupForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
@@ -43,16 +72,49 @@
       try {
         const res = await fetch(`${baseUrl}/api/users/signup`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
-
         const data = await res.json();
-        document.getElementById("response").innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        document.getElementById("signupResponse").innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        // Autofill userId for purchase & earnings
+        if (data.userId) {
+          document.getElementById("purchaseUserId").value = data.userId;
+          document.getElementById("earnUserId").value = data.userId;
+        }
       } catch (err) {
-        document.getElementById("response").innerHTML = `<p class='text-danger'>Error: ${err.message}</p>`;
+        document.getElementById("signupResponse").innerHTML = `<p class='text-danger'>Error: ${err.message}</p>`;
+      }
+    });
+
+    document.getElementById("purchaseForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const userId = document.getElementById("purchaseUserId").value;
+      const amount = Number(document.getElementById("amount").value);
+
+      try {
+        const res = await fetch(`${baseUrl}/api/purchase/make`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, amount }),
+        });
+        const data = await res.json();
+        document.getElementById("purchaseResponse").innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      } catch (err) {
+        document.getElementById("purchaseResponse").innerHTML = `<p class='text-danger'>Error: ${err.message}</p>`;
+      }
+    });
+
+    document.getElementById("earningsForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const userId = document.getElementById("earnUserId").value;
+
+      try {
+        const res = await fetch(`${baseUrl}/api/earnings/${userId}`);
+        const data = await res.json();
+        document.getElementById("earningsResponse").innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      } catch (err) {
+        document.getElementById("earningsResponse").innerHTML = `<p class='text-danger'>Error: ${err.message}</p>`;
       }
     });
   </script>
